@@ -11,13 +11,18 @@ public class Node<T extends Comparable<T>> {
 	}
 	
 	public void addNode(Node<T> node) {
-		if (data == null) {
-			this.data = node.data;
-		}
 		if (node.data.compareTo(data) >= 0) {
-			left.addNode(node);
+			if (right == null) {
+				right = node;
+			} else {
+				right.addNode(node);
+			}
 		} else {
-			right.addNode(node);
+			if( left == null) {
+				left =node;
+			} else {
+				left.addNode(node);
+			}
 		}
 	}
 	
@@ -31,5 +36,9 @@ public class Node<T extends Comparable<T>> {
 	
 	public Node<T> right() {
 		return right;
+	}
+	
+	public boolean isLeaf() {
+		return left() == null && right() == null;
 	}
 }

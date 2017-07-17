@@ -9,7 +9,7 @@ public class PalindromeTest {
 
 	
 	/*
-	 * Falla si es no palÃ­ndromo
+	 * Falla si es no palíndromo
 	 * */
 	@Test
 	public void notAPalindromeTest() {
