@@ -43,6 +43,8 @@ public class Search {
 		assertTrue(sumUp);
 	}
 	
+	
+	
 	@Test
 	public void findIfSumOfTwoExistsHash() {
 		//O(n)
@@ -60,5 +62,29 @@ public class Search {
 			}
 		}
 		assertTrue(sumUp);
+	}
+	
+	//Se puede hacer en O(1) el canBeObtained()?
+	
+	private Integer[] nums = {8, 6, 3, 7, 2};
+	private int number = 5;
+	
+	public Map<Integer, Integer> hashize() {
+		//O(n^2)
+		Map<Integer, Integer> map = new HashMap<>();
+		for (Integer integer1 : nums) {
+			for (Integer integer2 : nums) {
+				if (integer1 != integer2) {
+					map.put(integer1 + integer2, 0);
+				}
+			}
+		}
+		return map;
+	}
+	
+	@Test
+	public void canBeObtained() {
+		//O(1)
+		assertTrue(hashize().containsKey(number));
 	}
 }
