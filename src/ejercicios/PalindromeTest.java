@@ -14,7 +14,7 @@ public class PalindromeTest {
 	@Test
 	public void notAPalindromeTest() {
 		String nonPalindromeWord = "hola"; 
-		assertFalse(Palindromes.isPalindromeSimple(nonPalindromeWord));
+		assertFalse(Palindromes.isPalindromeAllInOne(nonPalindromeWord));
 	}
 	
 	/*
@@ -23,7 +23,7 @@ public class PalindromeTest {
 	@Test
 	public void palindromeEvenTest() {
 		String evenPalindrome = "aaaa";
-		assertTrue(Palindromes.isPalindromeSimple(evenPalindrome));
+		assertTrue(Palindromes.isPalindromeAllInOne(evenPalindrome));
 	}
 	
 	/*
@@ -32,7 +32,7 @@ public class PalindromeTest {
 	@Test
 	public void isCaseInsensitiveTest() {
 		String palindrome = "Neuquen";
-		assertTrue(Palindromes.isPalindromeCaseInsensitive(palindrome));
+		assertTrue(Palindromes.isPalindromeAllInOne(palindrome));
 	}
 	
 	/*
@@ -41,7 +41,7 @@ public class PalindromeTest {
 	@Test
 	public void isSpaceInsensitiveTest() {
 		String palindrome = "anita lava la tina";
-		assertTrue(Palindromes.isPalindromeIgnoreNonAlphabetic(palindrome));
+		assertTrue(Palindromes.isPalindromeAllInOne(palindrome));
 	}
 	
 	/*
@@ -59,7 +59,7 @@ public class PalindromeTest {
 	@Test
 	public void isNonAlphabeticInsensitiveTest() {
 		String specialCharsPhrase = "madam, i'm adam";
-		assertTrue(Palindromes.isPalindromeIgnoreNonAlphabetic(specialCharsPhrase));
+		assertTrue(Palindromes.isPalindromeAllInOne(specialCharsPhrase));
 	}
 	
 	/*
