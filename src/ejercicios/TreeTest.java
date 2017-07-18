@@ -71,4 +71,40 @@ public class TreeTest {
 		sortedArrayToBST(array, start, middle - 1, bst);
 		sortedArrayToBST(array, middle + 1, end, bst);
 	};
+	
+	@Test
+	public void bfsSearchTest() {
+		Tree<Integer> tree = new Tree<>();
+		tree.add(4);
+		tree.add(2);
+		tree.add(1);
+		tree.add(5);
+		tree.add(3);
+		tree.add(6);
+		assertTrue(tree.bfsSearch(5));
+	}
+	
+	@Test
+	public void bfsSearchRTest() {
+		Tree<Integer> tree = new Tree<>();
+		tree.add(4);
+		tree.add(2);
+		tree.add(1);
+		tree.add(5);
+		tree.add(3);
+		tree.add(6);
+		assertTrue(tree.bfsSearchR(5));
+	}
+	
+	@Test
+	public void dfsSearchTest() {
+		Tree<Integer> tree = new Tree<>();
+		tree.add(3);
+		tree.add(1);
+		tree.add(2);
+		tree.add(5);
+		tree.add(4);
+		tree.add(6);
+		assertTrue(tree.dfsSearch(6));
+	}
 }

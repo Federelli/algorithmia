@@ -34,8 +34,16 @@ public class Node<T extends Comparable<T>> {
 		return left;
 	}
 	
+	public boolean hasLeft() {
+		return left != null;
+	}
+	
 	public Node<T> right() {
 		return right;
+	}
+	
+	public boolean hasRight() {
+		return right != null;
 	}
 	
 	public boolean isLeaf() {
