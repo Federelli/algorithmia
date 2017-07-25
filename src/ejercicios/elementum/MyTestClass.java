@@ -20,9 +20,12 @@ import java.util.Map;
 public class MyTestClass {
 
 	private static MyTestClass myInstance;
-	private Map<String, VeryExpensiveToCreateClass> cache = new HashMap<>();
+	private Map<String, VeryExpensiveToCreateClass> cache = new HashMap<>(); // Usar ConcurrentHashMap (1)
 	VerySlowConnection connection = new VerySlowConnection();
 
+	// El synchronized este obliga a todos los threads a estar sincronizados y
+	// cada thread tiene que esperar si hay otro haciendo el chequeo de null.
+	// (2)
 	public static synchronized MyTestClass getInstance() {
 		if (myInstance == null) {
 			myInstance = new MyTestClass();
@@ -31,8 +34,13 @@ public class MyTestClass {
 	}
 
 	private String buildIdentifier(String token, String username, String machine) {
+		//Se utiliza StringBuffer cuando esta variable va a ser única por Thread, no es necesario. (3)
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(token).append("|").append(username).append("|").append(machine);
+		buffer.append(token)
+			.append("|")
+			.append(username)
+			.append("|")
+			.append(machine);
 		return buffer.toString();
 	}
 
@@ -40,28 +48,23 @@ public class MyTestClass {
 		return connection.get(id);
 	}
 
+	// El synchronized de aca sólo deja que se haga una conexión a la vez (4)
 	public synchronized VeryExpensiveToCreateClass get(String token, String username, String machine) {
 		String id = buildIdentifier(token, username, machine);
-
 		VeryExpensiveToCreateClass result = cache.get(id);
-
 		if (result == null) {
 			System.out.println("Retrieving remote instance...");
 			result = retrieveRemoteInstance(id);
 		}
-
 		if (result == null) {
 			System.out.println("Remote instance not found...");
 			System.out.println("Creating instance...");
-			result = new VeryExpensiveToCreateClass(id); //Crea otra instancia de la clase en vez de devolver la que tiene, media pila capo!
+			result = new VeryExpensiveToCreateClass(id);
+			// Crea otra instancia de la clase en vez de devolver la que tiene, media pila capo! (5)
 			cache.put(id, result);
 		}
 
-//		if (cache.containsKey(id)) {
-//			return cache.get(id);
-//		} else {
-//			return retrieveRemoteInstance(id);
-//		}
+		return result;
 
 	}
 
