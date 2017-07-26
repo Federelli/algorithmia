@@ -19,40 +19,50 @@ public class ElementumProducerConsumer {
 	}
 
 	public Integer poll() throws InterruptedException {
-		while (true) {
-			synchronized (queue) {
-				while (queue.isEmpty()) {
-					System.out.println("Queue is empty, waiting...");
-					queue.wait(timeOut);
-				}
-				queue.poll();
-				System.out.println("Took item, list size is: " + queue.size());
-				queue.notify();
+		synchronized (queue) {
+			Integer num;
+			if (queue.isEmpty()) {
+				System.out.println("Queue is empty, waiting...");
+				queue.wait(timeOut);
 			}
+			if (queue.isEmpty()) {
+				return null;
+			}
+			num = queue.poll();
+			System.out.println("Took item, list size is: " + queue.size());
+			queue.notifyAll();
+			return num;
 		}
 	}
 
 	public boolean offer(int number) throws InterruptedException {
-		while (true) {
-			synchronized (queue) {
-				while (isFull()) {
-					System.out.println("Queue is full, waiting...");
-					queue.wait(timeOut);
-				}
-				queue.add(number);
-				System.out.println("Produced item, list size is: " + queue.size());
-				queue.notify();
+		synchronized (queue) {
+			// No es necesario un while, para chequear los spurious wake-ups ya
+			// que se quiere aprovechar el timeout, por lo tanto pregunto dos
+			// veces
+			if (isFull()) {
+				System.out.println("Queue is full, waiting...");
+				queue.wait(timeOut);
 			}
+			if (isFull()) {
+				return false;
+			}
+			queue.add(number);
+			System.out.println("Produced item, list size is: " + queue.size());
+			queue.notifyAll();
+			return true;
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		final ElementumProducerConsumer consumerProducer = new ElementumProducerConsumer(100, 1000);
+		final ElementumProducerConsumer consumerProducer = new ElementumProducerConsumer(0, 50);
 		Thread producer = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					consumerProducer.offer(1);
+					while (true) {
+						consumerProducer.offer(1);
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -63,7 +73,9 @@ public class ElementumProducerConsumer {
 			@Override
 			public void run() {
 				try {
-					consumerProducer.poll();
+					while (true) {
+						consumerProducer.poll();
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -73,5 +85,5 @@ public class ElementumProducerConsumer {
 		producer.start();
 		consumer.start();
 	}
-	
+
 }

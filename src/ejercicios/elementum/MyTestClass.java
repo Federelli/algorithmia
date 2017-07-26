@@ -22,6 +22,7 @@ public class MyTestClass {
 	private static MyTestClass myInstance;
 	private Map<String, VeryExpensiveToCreateClass> cache = new HashMap<>(); // Usar ConcurrentHashMap (1)
 	VerySlowConnection connection = new VerySlowConnection();
+	//Inyectar dependencia, para poder testear.
 
 	// El synchronized este obliga a todos los threads a estar sincronizados y
 	// cada thread tiene que esperar si hay otro haciendo el chequeo de null.

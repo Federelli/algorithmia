@@ -9,7 +9,8 @@ public class MyBetterTestClass {
 	private volatile static MyBetterTestClass myInstance;
 	 //Uso ConcurrentHashMap
 	private ConcurrentMap<String, VeryExpensiveToCreateClass> cache = new ConcurrentHashMap<>();
-	VerySlowConnection connection = new VerySlowConnection();
+	//Cada tanto limpiar el HashMap
+	VerySlowConnection connection = new VerySlowConnection(); //Pool de conexiones
 
 	 //Agrego objeto para usar de Lock
 	private static Object singletonLock = new Object();
@@ -29,6 +30,7 @@ public class MyBetterTestClass {
 		//La mayoría de las veces la instancia ya va a estar creada y no se llama al synchronized
 		return myInstance;
 	}
+	//utilizar Loader.
 
 	private String buildIdentifier(String token, String username, String machine) {
 		//Usemos StringBuilder en vez de StringBuffer, no es necesario el thread safeness.
@@ -50,13 +52,28 @@ public class MyBetterTestClass {
 		String id = buildIdentifier(token, username, machine);
 		
 		//Al tener ConcurrentHashMap no es necesario que sea sincronizado ni el método ni el put
-		cache.putIfAbsent(id, retrieveRemoteInstance(id));
+		if(cache.containsKey(id)) {
+			cache.get(id);
+		} else {
+			VeryExpensiveToCreateClass result = retrieveRemoteInstance(id);
+			synchronized(updateCacheLock) {
+				if(cache.containsKey(id)) {
+					cache.get(id);
+				} else {
+					if (result != null) {
+						cache.put(id, result);
+					} else {
+						cache.put(id, new VeryExpensiveToCreateClass(id));
+					}
+				}
+			}
+		}
 		
 		//Si no pudiera utilizar un ConcurrentHashMap, entonces el synch va luego de chequear si existe la variable
 //		if (!cache.containsKey(id)) {
 //			//Pongo un synchronized a nivel put luego de hacer la verificación si tengo o no el objeto en el cache
 //			synchronized(updateCacheLock) {
-//				cache.putIfAbsent(id, retrieveRemoteInstance(id));
+//				cache.put(id, retrieveRemoteInstance(id));
 //			}
 //		} 
 		return cache.get(id);
