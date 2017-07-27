@@ -15,4 +15,6 @@ public interface VendingMachine {
 
 	public Pair<Optional<VendingItem>, BigDecimal> submit();
 	
+	public BigDecimal cancel();
+	
 }

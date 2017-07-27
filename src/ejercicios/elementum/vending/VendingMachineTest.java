@@ -50,25 +50,37 @@ public class VendingMachineTest {
 		vendingMachine.submit();
 		assertTrue(vendingMachine.insertedMoney().equals(new BigDecimal(1)));
 	}
-
+	
+	@Test
 	public void emptyLane() {
 		VendingMachineImpl vendingMachine = createVendingMachineWithStock();
 		for (int i = 0; i < 10; i++) {
-			vendingMachine.selectItem(0);
+			vendingMachine.selectItem(1);
 			vendingMachine.insertMoney(new BigDecimal(1));
 			vendingMachine.submit();
 		}
 		assertTrue(vendingMachine.itemsAtLane(1) == 0);
 	}
 	
+	@Test
 	public void emptyLanePlusOne() {
 		VendingMachineImpl vendingMachine = createVendingMachineWithStock();
 		for (int i = 0; i < 11; i++) {
-			vendingMachine.selectItem(0);
+			vendingMachine.selectItem(1);
 			vendingMachine.insertMoney(new BigDecimal(1));
 			vendingMachine.submit();
 		}
 		assertTrue(vendingMachine.itemsAtLane(1) == 0);
+	}
+	
+	@Test
+	public void cancel() {
+		VendingMachineImpl vendingMachine = createVendingMachineWithStock();
+		vendingMachine.selectItem(1);
+		vendingMachine.insertMoney(new BigDecimal(1));
+		assertTrue(vendingMachine.cancel().equals(new BigDecimal(1)));
+		assertTrue(vendingMachine.itemsAtLane(1) == 10);
+		assertTrue(vendingMachine.insertedMoney().equals(new BigDecimal(0)));
 	}
 
 }

@@ -83,6 +83,13 @@ public class VendingMachineImpl implements VendingMachine {
 		}
 		// TODO: update display
 	}
+	
+	@Override
+	public BigDecimal cancel() {
+		BigDecimal previousMoney = insertedMoney;
+		insertedMoney = new BigDecimal(0);
+		return previousMoney;
+	}
 
 	private BigDecimal giveChange(BigDecimal itemPrice) {
 		return insertedMoney.subtract(itemPrice);
