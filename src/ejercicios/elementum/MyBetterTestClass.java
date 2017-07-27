@@ -50,14 +50,13 @@ public class MyBetterTestClass {
 	//Quito el synchronized a nivel método
 	public VeryExpensiveToCreateClass get(String token, String username, String machine) {
 		String id = buildIdentifier(token, username, machine);
-		
-		//Al tener ConcurrentHashMap no es necesario que sea sincronizado ni el método ni el put
+		VeryExpensiveToCreateClass result = null;
 		if(cache.containsKey(id)) {
-			cache.get(id);
+			result = cache.get(id);
 		} else {
-			VeryExpensiveToCreateClass result = retrieveRemoteInstance(id);
+			result = retrieveRemoteInstance(id);
 			synchronized(updateCacheLock) {
-				if(cache.containsKey(id)) {
+				if (cache.containsKey(id)) {
 					cache.get(id);
 				} else {
 					if (result != null) {
@@ -68,15 +67,7 @@ public class MyBetterTestClass {
 				}
 			}
 		}
-		
-		//Si no pudiera utilizar un ConcurrentHashMap, entonces el synch va luego de chequear si existe la variable
-//		if (!cache.containsKey(id)) {
-//			//Pongo un synchronized a nivel put luego de hacer la verificación si tengo o no el objeto en el cache
-//			synchronized(updateCacheLock) {
-//				cache.put(id, retrieveRemoteInstance(id));
-//			}
-//		} 
-		return cache.get(id);
+		return result;
 	}
 
 	public static void main(String[] args) {
